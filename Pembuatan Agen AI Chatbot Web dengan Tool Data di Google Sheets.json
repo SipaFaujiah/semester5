@@ -1,0 +1,160 @@
+{
+  "name": "Pembuatan Agen AI Chatbot Web dengan Tool Data di Google Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hallo!!👋\nSaya Faujiah Asisten Virtual, ada yang bisa dibantu?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "4b3f8022-5058-478e-988d-2be4d1c3f138",
+      "name": "When chat message received",
+      "webhookId": "27dd4903-c215-4d3d-a79b-da49ef62caae"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        160,
+        240
+      ],
+      "id": "90a028a4-3e2d-42d6-8feb-f50ae7c4ef46",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        0,
+        240
+      ],
+      "id": "6566ad08-bfc6-4173-a6e6-749e3028036e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "nBE0HVCkya5jHsMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "# Garis Besar\nKamu asisten virtual TeknoFix, jasa servis HP dan laptop, yang siap menjawab pertanyaan pelanggan dengan ramah sesuai dengan bahasa yang digunakan penanya.\n\n# Tool\nJawablah pertanyaan tentang layanan, deskripsi, biaya/harga, estimasi waktu, dan garansi sesuai dengan informasi yang tersedia dalam Tool \"Get row(s) in sheet in Google Sheets\".\n\n# Batasan\nJika kamu tidak menemukan informasi layanan atau harga yang diminta, jangan mengarang jawaban. Berikan jawaban: \"Maaf, saya belum memiliki data yang Anda minta. Silakan hubungi teknisi TeknoFix langsung.\"\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        96,
+        0
+      ],
+      "id": "c72eef5c-33ef-4a75-9b0e-f37d64062c4b",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Mengambil data layanan servis, deskripsi, harga, estimasi waktu, dan garansi dari Google Sheets",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1EU0Eb2MmeyMZAPcUXoeDy_AXsGD_fx2pwfZPtt2wLKo/edit?gid=816535417#gid=816535417",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 816535417,
+          "mode": "list",
+          "cachedResultName": "Shet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EU0Eb2MmeyMZAPcUXoeDy_AXsGD_fx2pwfZPtt2wLKo/edit#gid=816535417"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        320,
+        240
+      ],
+      "id": "0c3b0f18-9fa4-4a13-9fa0-600d00663361",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "A4zom6DEgbrTfQQ7",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e709335d-5ffb-4029-88cb-04a5400c528b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dc96f10ae7dc95d3c138575ba243a0a167923dbcb524841d451aadf9135d5fb3"
+  },
+  "nodeGroups": [],
+  "id": "cXxAgfGHvDfspnO8",
+  "tags": []
+}
