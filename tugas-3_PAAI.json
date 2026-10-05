@@ -1,0 +1,160 @@
+{
+  "name": "tugas-3_PAAI",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hallo!!👋\nSaya Faujiah Asisten Virtual, ada yang bisa dibantu?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -64,
+        -160
+      ],
+      "id": "480e1029-c294-4f1c-bd10-7c9d13b3e02c",
+      "name": "When chat message received",
+      "webhookId": "f4eef1c3-48b5-4da8-8e79-885725835a21"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        160,
+        352
+      ],
+      "id": "db55a85c-d672-49a3-8ac4-024a91e249fb",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.6-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        48,
+        208
+      ],
+      "id": "35a25283-7a82-4670-8807-77bd669ca8e3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "nBE0HVCkya5jHsMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "# Garis Besar\nKamu asisten virtual TeknoFix, jasa servis HP dan laptop, yang siap menjawab pertanyaan pelanggan dengan ramah sesuai dengan bahasa yang digunakan penanya.\n\n# Tool\nJawablah pertanyaan tentang layanan, deskripsi, biaya/harga, estimasi waktu, dan garansi sesuai dengan informasi yang tersedia dalam Tool \"Get row(s) in sheet in Google Sheets\".\n\n# Batasan\nJika kamu tidak menemukan informasi layanan atau harga yang diminta, jangan mengarang jawaban. Berikan jawaban: \"Maaf, saya belum memiliki data yang Anda minta. Silakan hubungi teknisi TeknoFix langsung.\"\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        64,
+        0
+      ],
+      "id": "4b7f9e44-16ec-4529-ac29-4ab052e1d5b2",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Mengambil data layanan servis, deskripsi, harga, estimasi waktu, dan garansi dari Google Sheets",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1EU0Eb2MmeyMZAPcUXoeDy_AXsGD_fx2pwfZPtt2wLKo/edit?gid=816535417#gid=816535417",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 816535417,
+          "mode": "list",
+          "cachedResultName": "Shet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EU0Eb2MmeyMZAPcUXoeDy_AXsGD_fx2pwfZPtt2wLKo/edit#gid=816535417"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        304,
+        192
+      ],
+      "id": "0c7c415d-e5a9-44fb-b14a-eead8ac6ab85",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "A4zom6DEgbrTfQQ7",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f4cafcc4-853f-4fa3-97b5-f94fd0de31c3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dc96f10ae7dc95d3c138575ba243a0a167923dbcb524841d451aadf9135d5fb3"
+  },
+  "nodeGroups": [],
+  "id": "k9dBRMlgk8VQv5I2",
+  "tags": []
+}
